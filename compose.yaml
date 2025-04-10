@@ -1,0 +1,23 @@
+services:
+
+  keucloak:
+    image: quay.io/keycloak/keycloak:26.1.4
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    command: start-dev
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: demo
+    volumes:
+      - pgdatademo:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdatademo:
