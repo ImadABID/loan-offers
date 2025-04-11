@@ -18,12 +18,11 @@ public class UserInterfaceController {
         this.dataRepository = dataRepository;
     }
     
-    @GetMapping("loanpost")
+    @GetMapping("/")
     public String loanPost(Model model) {
         List<DataEntity> data = dataRepository.findAll();
         model.addAttribute("loans", data);
-        return "loanPost";
+        return "home";
     }
     
 }
-

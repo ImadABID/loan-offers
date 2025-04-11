@@ -1,10 +1,108 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Thymeleaf Example</title>
+    <title>Loan Offers</title>
 </head>
+<script>
+
+    const postLoan = async ()=>{
+
+        const csrfToken = await fetch("http://localhost:8081/csrf").then(response=>response.json());
+
+        const loanDescription = document.getElementById("loan-description");
+
+        fetch("http://localhost:8081/loan", {
+            method: "POST",
+            headers: {
+                [csrfToken.headerName]: csrfToken.token
+            },
+            body: loanDescription.value
+        })
+        .then(response=>{
+            if (!response.ok) {
+                alert("error");
+            }else{
+                alert("added");
+            }
+        });
+
+    }
+
+    const putLoan = async (node)=>{
+        
+        const parentDiv = node.parentElement;
+        const id = parentDiv.getAttribute("loan-id");
+        const newValue = parentDiv.getElementsByTagName("input")[0].value;
+
+        const csrfToken = await fetch("http://localhost:8081/csrf").then(response=>response.json());
+
+        fetch(`http://localhost:8081/loan/${id}`, {
+            method: "PUT",
+            headers: {
+                [csrfToken.headerName]: csrfToken.token
+            },
+            body: newValue
+        })
+        .then(response=>{
+            if (!response.ok) {
+                alert("error");
+            }else{
+                alert("modified");
+            }
+        });
+
+    }
+
+    const deleteLoan = async (node)=>{
+        
+        const parentDiv = node.parentElement;
+        const id = parentDiv.getAttribute("loan-id");
+
+        const csrfToken = await fetch("http://localhost:8081/csrf").then(response=>response.json());
+
+        fetch(`http://localhost:8081/loan/${id}`, {
+            method: "DELETE",
+            headers: {
+                [csrfToken.headerName]: csrfToken.token
+            }
+        })
+        .then(response=>{
+            if (!response.ok) {
+                alert("error");
+            }else{
+                alert("deleted");
+                parentDiv.remove();
+            }
+        });
+
+    }
+
+    const viewLoan = async (node)=>{
+        
+        const parentDiv = node.parentElement;
+        const id = parentDiv.getAttribute("loan-id");
+
+        const loan = await fetch(`http://localhost:8081/loan/${id}`).then(response=>response.text());
+
+        alert(loan);
+
+    }
+
+</script>
 <body>
-    <h1>Welcome to Thymeleaf!</h1>
+    <h1 >Welcome to the Loan Offers app!</h1>
     <p th:text="${message}"></p>
+    <div id="current-loans">
+        <ul>
+            <li th:each="loan : ${loans}" th:loan-id="${loan.id}">
+                <input style="width: 700px;" type="text" th:value="${loan.strdata}"></input>
+                <span th:onclick="viewLoan(this)">view</span> -
+                <span th:onclick="putLoan(this)">edit</span> -
+                <span th:onclick="deleteLoan(this)">delete</span>
+            </li>
+        </ul>
+    </div>
+    <input id="loan-description" type="text" placeholder="Describe the offer">
+    <button id="post-loan" onclick="postLoan()">post loan</button>
 </body>
 </html>
