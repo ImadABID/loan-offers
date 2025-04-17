@@ -1,0 +1,19 @@
+spring.application.name: demo
+
+# Spring Web
+server.port: 8081
+
+# Spring Data
+spring.datasource:
+  url: jdbc:postgresql://localhost:5432/demo
+  driver-class-name: org.postgresql.Driver
+  username: demo
+  password: 1234
+
+# Spring Security
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/proptech
